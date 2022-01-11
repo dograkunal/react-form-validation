@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useState } from 'react';
 
@@ -6,29 +7,34 @@ function form() {
     name: '',
     email: '',
     phone: '',
-    sex: '',
+    // sex: '',
+    gender: '',
   });
 
   const [issues, setIssues] = useState({});
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
+  const [gender, setGender] = useState();
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setData({ ...data, [name]: value });
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleError();
     if (handleError) {
-      console.log(data);
+      console.log(data, gender);
     } else {
-      console.log('errors');
+      console.log('Errors');
     }
   };
 
-  const handleError = () => {
+  const handleError = (e) => {
+    const { name, value } = e.target;
+
     let formValid = true;
     let errors = {};
+
     if (!data.name || data.name.length == 0) {
       formValid = false;
       errors['nameIssue'] = 'Name is Required';
@@ -52,6 +58,8 @@ function form() {
       errors['phoneIssue'] = 'Should be less than 11 characters ';
       formValid = false;
     }
+
+    setData({ ...data, [name]: value });
     setIssues({ ...errors });
     return formValid;
   };
@@ -66,7 +74,7 @@ function form() {
           name="name"
           placeholder="Name"
           value={data.name}
-          onChange={handleChange}
+          onChange={handleError}
         ></input>
         <i>{issues && issues.nameIssue}</i>
       </div>
@@ -78,7 +86,7 @@ function form() {
           name="email"
           placeholder="Email"
           value={data.email}
-          onChange={handleChange}
+          onChange={handleError}
         ></input>
         <i>{issues && issues.emailIssue}</i>
       </div>
@@ -89,18 +97,51 @@ function form() {
           type="number"
           name="phone"
           placeholder="Phone"
-          value={data.phone}ds
-          onChange={handleChange}
+          value={data.phone}
+          onChange={handleError}
           maxLength="10"
         ></input>
         <i>{issues && issues.phoneIssue}</i>
       </div>
 
+      {/* <div>
+        <input
+          type="radio"
+          id="male"
+          name="male"
+          value={data.sex}
+          onChange={() => {
+            setData.sex == 'male';
+          }}
+        />
+        <label> Male </label>
+        <input
+          type="radio"
+          id="female"
+          name="female"
+          value={data.sex}
+          onChange={() => {
+            setData.sex == 'female';
+          }}
+        />
+        <label> Female </label>
+      </div> */}
+
       <div>
-        <input type="radio" id="male" name="male" value={data.sex} />
-        <label for="male"> Male </label>
-        <input type="radio" id="female" name="female" value={data.sex} />
-        <label for="female"> Female </label>
+        <label>Gender:</label>
+        <RadioInput
+          label="Male"
+          value="male"
+          checked={gender}
+          setter={setData}
+        />
+        <RadioInput
+          label="Female"
+          value="female"
+          checked={gender}
+          setter={setGender}
+        />
+
       </div>
 
       <div>
@@ -111,3 +152,16 @@ function form() {
 }
 
 export default form;
+
+const RadioInput = ({ label, value, checked, setter }) => {
+  return (
+    <label>
+      <input
+        type="radio"
+        checked={checked == value}
+        onChange={() => setter(value)}
+      />
+      <span>{label}</span>
+    </label>
+  );
+};
