@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from 'react';
 
@@ -7,7 +6,8 @@ function form() {
     name: '',
     email: '',
     phone: '',
-    // sex: '',
+    password: '',
+    password2: '',
     gender: '',
   });
 
@@ -57,6 +57,25 @@ function form() {
     } else if (data.phone.length > 11) {
       errors['phoneIssue'] = 'Should be less than 11 characters ';
       formValid = false;
+    }
+
+    if (!data.password || data.password.length == 0) {
+      formValid = false;
+      errors['passIssue'] = 'Enter password';
+    } else if (
+      !/^[A-Za-z]\w{7,14}$/i.test(data.password) &&
+      data.password.length < 5
+    ) {
+      errors['passIssue'] = 'Invalid password';
+      formValid = false;
+    }
+
+    if (!data.password2 || data.password2.length == 0) {
+      formValid = false;
+      errors['passIssue2'] = 'Password required';
+    } else if (data.password != data.password2) {
+      formValid = false;
+      errors['passIssue2'] = "Password didn't match";
     }
 
     setData({ ...data, [name]: value });
@@ -141,9 +160,31 @@ function form() {
           checked={gender}
           setter={setGender}
         />
-
       </div>
 
+      <div>
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={data.password}
+          onChange={handleError}
+        ></input>
+        <i>{issues && issues.passIssue}</i>
+      </div>
+
+      <div>
+        <label>Confirm Password</label>
+        <input
+          type="password"
+          name="password2"
+          placeholder="Confirm Password"
+          value={data.password2}
+          onChange={handleError}
+        ></input>
+        <i>{issues && issues.passIssue2}</i>
+      </div>
       <div>
         <button type="submit">Submit</button>
       </div>
